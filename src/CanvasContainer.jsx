@@ -1,12 +1,10 @@
 /* eslint-disable react/no-unknown-property */
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import Stage from "./Stage";
+import Stage from "./stage";
 import AnimalBox from "./AnimalBox";
 
 function CanvasContainer() {
   const handleDrop = (position) => {
-    // Assuming the stage is centered at [0, 0, 0] and has a radius of 1.5
     const isWithinStage = Math.sqrt(position[0] ** 2 + position[2] ** 2) <= 1.5;
 
     if (isWithinStage) {
@@ -18,24 +16,27 @@ function CanvasContainer() {
   };
 
   return (
-    <Canvas shadows>
+    <Canvas
+      shadows
+      camera={{ position: [5, 5, 5], fov: 50 }}
+      onCreated={(state) => state.camera.lookAt(0, 0, 0)}
+    >
       <ambientLight intensity={0.5} />
       <directionalLight position={[2, 5, 2]} intensity={1} castShadow />
-      <OrbitControls enablePan={false} enableZoom={false} />
 
       <Stage />
 
       <AnimalBox
         color="brown"
         soundPath="/asset/dog.wav"
-        initialPosition={[2, 0.5, 0]}
+        initialPosition={[2, 1, 0]}
         label="Dog"
         onDrop={handleDrop}
       />
       <AnimalBox
-        color="black"
+        color="green"
         soundPath="/asset/cow.wav"
-        initialPosition={[2, 0.5, 1]}
+        initialPosition={[2, 1, 1]}
         label="Cow"
         onDrop={handleDrop}
       />
