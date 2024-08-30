@@ -16,6 +16,7 @@ function AnimalBox({ color, soundPath, initialPosition, label, onDrop }) {
 
   const handlePointerMove = (event) => {
     if (dragging) {
+      console.log([event.point.x, position[1], event.point.z]);
       setPosition([event.point.x, position[1], event.point.z]);
     }
   };
@@ -23,7 +24,11 @@ function AnimalBox({ color, soundPath, initialPosition, label, onDrop }) {
   const handlePointerUp = () => {
     setDragging(false);
 
-    onDrop(position, () => soundManager.play());
+    onDrop(
+      position,
+      () => soundManager.play(),
+      () => setPosition(initialPosition)
+    );
   };
 
   return (

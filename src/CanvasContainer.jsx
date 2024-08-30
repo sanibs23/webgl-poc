@@ -4,15 +4,15 @@ import Stage from "./stage";
 import AnimalBox from "./AnimalBox";
 
 function CanvasContainer() {
-  const handleDrop = (position, cb) => {
+  const handleDrop = (position, playSound, setInitPos) => {
     const isWithinStage = Math.sqrt(position[0] ** 2 + position[2] ** 2) <= 1.5;
 
     if (isWithinStage) {
       console.log("Dropped on stage at position:", position);
-      cb();
+      playSound();
     } else {
       // need to set the position back to the initial position
-
+      setInitPos();
       console.log("Dropped outside of stage");
     }
   };
@@ -31,14 +31,14 @@ function CanvasContainer() {
       <AnimalBox
         color="brown"
         soundPath="/asset/dog.wav"
-        initialPosition={[2, 1, 0]}
+        initialPosition={[2.9060438084608067, 1, 3.0090094185268157]}
         label="Dog"
         onDrop={handleDrop}
       />
       <AnimalBox
         color="green"
         soundPath="/asset/cow.wav"
-        initialPosition={[2, 1, 1]}
+        initialPosition={[3.3870179497668502, 1, 2.382343455587395]}
         label="Cow"
         onDrop={handleDrop}
       />
