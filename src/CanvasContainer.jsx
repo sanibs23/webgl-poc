@@ -4,13 +4,15 @@ import Stage from "./stage";
 import AnimalBox from "./AnimalBox";
 
 function CanvasContainer() {
-  const handleDrop = (position) => {
+  const handleDrop = (position, cb) => {
     const isWithinStage = Math.sqrt(position[0] ** 2 + position[2] ** 2) <= 1.5;
 
     if (isWithinStage) {
       console.log("Dropped on stage at position:", position);
-      // Additional logic for when the animal is dropped on the stage
+      cb();
     } else {
+      // need to set the position back to the initial position
+
       console.log("Dropped outside of stage");
     }
   };
