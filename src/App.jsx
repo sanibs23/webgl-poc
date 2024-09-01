@@ -4,9 +4,9 @@ import SoundManager from "./SoundManager";
 
 function App() {
   const initialPositions = {
-    dog: [1.31868036280535, 0.7, 1.7560704085677732],
-    cow: [1.442241956641566, 0.68, 3.457655428003738],
-    cat: [2.877665716528814, 0.7, 2.5112758863190425],
+    dog: [1.31868, 0.7, 1.7560704],
+    cow: [1.611694016323642, 0.68, 0.9120070399963702],
+    cat: [1.7178714999425522, 0.68, 0.08383195852578564],
   };
 
   const [animalPositions, setAnimalPositions] = useState({

@@ -34,7 +34,7 @@ function AnimalBox({ color, soundPath, initialPosition, label, onDrop }) {
       soundManager.stop();
       isPlayingRef.current = false; // Mark sound as stopped
     }
-  }, [currentPosition]);
+  }, [currentPosition, soundManager]);
 
   const checkIfOnStage = (position) => {
     // Assuming stage is centered at (0, 0) and has a radius of 1.5
@@ -57,6 +57,7 @@ function AnimalBox({ color, soundPath, initialPosition, label, onDrop }) {
 
   const handlePointerMove = (event) => {
     if (dragging) {
+      console.log([event.point.x, initialPosition[1], event.point.z]);
       api.position.set(event.point.x, initialPosition[1], event.point.z);
     }
   };

@@ -1,50 +1,41 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable react/no-unknown-property */
+/* eslint-disable react/prop-types */
 import { Canvas } from "@react-three/fiber";
 import { Physics, usePlane } from "@react-three/cannon";
 import Stage from "./Stage";
 import AnimalBox from "./AnimalBox";
+import { OrbitControls } from "@react-three/drei";
+// import GroundPlane from "./GroundPlane";
 
 function GroundPlane() {
   const [ref] = usePlane(() => ({
     rotation: [-Math.PI / 2, 0, 0],
-    position: [-2, -1, 0], // Adjust position to be below the stage
+    position: [-3.5, -1.8, -1], // Adjusted position to be centered below the stage
   }));
 
   return (
     <mesh ref={ref} receiveShadow>
-      <planeGeometry args={[10, 10]} />
+      <planeGeometry args={[12, 12]} />
       <meshStandardMaterial color="gray" />
     </mesh>
   );
 }
 
 function CanvasContainer({ positions }) {
-  const handleDrop = (position, playSound, stopSound) => {
-    // Assuming stage is centered at (0, 0) and has a radius of 1.5
-    const stageCenter = [0, 0];
+  const handleDrop = (position, playSound, stopSound, setInitPos) => {
+    const stageCenter = [0, 0]; // Stage is centered at (0, 0)
     const stageRadius = 1.5;
 
-    // Calculate distance from the stage center to the dropped position
     const dx = position[0] - stageCenter[0];
     const dz = position[2] - stageCenter[1];
     const distance = Math.sqrt(dx ** 2 + dz ** 2);
 
-    // Check if the drop is within the stage radius
     const isWithinStage = distance <= stageRadius;
 
-    console.log(`Drop Position:`);
-    console.dir(position);
-    console.log(`Distance from Stage Center: ${distance}`);
-    console.log(`Is Within Stage: ${isWithinStage}`);
-
     if (isWithinStage) {
-      console.dir("Dropped on stage at position:", position);
       playSound();
     } else {
-      // setInitPos();
       stopSound();
-      console.log("Dropped outside of stage");
     }
   };
 
@@ -56,8 +47,9 @@ function CanvasContainer({ positions }) {
     >
       <ambientLight intensity={0.5} />
       <directionalLight position={[2, 5, 2]} intensity={1} castShadow />
-
-      <Physics>
+      {/* <OrbitControls /> */}
+      <Physics gravity={[0, -7.8, 0]}>
+        {/* Gravity set to 80% of Earth's gravity */}
         <GroundPlane />
         <Stage />
         <AnimalBox
