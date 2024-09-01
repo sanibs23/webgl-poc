@@ -6,7 +6,11 @@ function Stage({ position = [0, 0, 0] }) {
   const [ref] = useCylinder(() => ({
     mass: 0,
     position,
-    args: [1.5, 1.5, 0.5, 64], // This defines a cylinder with a radius of 1.5 and height of 0.5
+    args: [1.5, 1.5, 0.5, 64],
+    userData: { name: "stage" },
+    onCollide: () => {
+      console.log("The animal has hit the stage!");
+    },
   }));
 
   return (

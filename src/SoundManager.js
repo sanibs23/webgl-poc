@@ -19,9 +19,12 @@ class SoundManager {
   }
 
   stop() {
-    console.log("stopping audio");
-    this.audio.pause();
-    this.audio.currentTime = 0; // Reset audio to start
+    if (!this.audio.paused) {
+      // Check if the audio is not paused
+      console.log("stopping audio");
+      this.audio.pause();
+      this.audio.currentTime = 0; // Reset audio to start
+    }
   }
 
   static stopAll() {

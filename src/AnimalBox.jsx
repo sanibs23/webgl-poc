@@ -3,18 +3,32 @@ import { useState, useEffect, useRef } from "react";
 import SoundManager from "./SoundManager";
 import { useBox } from "@react-three/cannon";
 
-function AnimalBox({ color, soundPath, initialPosition, label, onDrop }) {
+function AnimalBox({ color, soundPath, initialPosition, label }) {
   const [dragging, setDragging] = useState(false);
   const [currentPosition, setCurrentPosition] = useState(initialPosition);
-  const isPlayingRef = useRef(false); // Track if the sound is currently playing
+  const [isPlaying, setPlaying] = useState(false); // Track if the sound is currently playing
+  const soundManager = useRef(null);
+
+  useEffect(() => {
+    // Initialize soundManager when component mounts
+    soundManager.current = new SoundManager(soundPath);
+  }, [soundPath]);
 
   const [ref, api] = useBox(() => ({
     mass: 1,
     position: initialPosition,
     args: [0.38, 0.38, 0.38],
+    onCollide: (e) => {
+      // Check if collided with stage
+      if (
+        e.body.userData &&
+        e.body.userData.name === "stage" &&
+        soundManager.current
+      ) {
+        soundManager.current.play(); // Play sound on collision with stage
+      }
+    },
   }));
-
-  const soundManager = useRef(new SoundManager(soundPath)).current;
 
   useEffect(() => {
     const unsubscribe = api.position.subscribe((position) => {
@@ -27,14 +41,18 @@ function AnimalBox({ color, soundPath, initialPosition, label, onDrop }) {
     const roundedPosition = currentPosition.map((value) => Math.round(value));
 
     const isOnStage = checkIfOnStage(roundedPosition);
-    if (isOnStage && !isPlayingRef.current) {
-      isPlayingRef.current = true; // Mark sound as playing
-      soundManager.play();
-    } else if (!isOnStage && isPlayingRef.current) {
-      soundManager.stop();
-      isPlayingRef.current = false; // Mark sound as stopped
+    if (isOnStage && !isPlaying) {
+      setPlaying(true); // Mark sound as playing
+    } else if (!isOnStage && isPlaying) {
+      setPlaying(false); // Mark sound as stopped
     }
-  }, [currentPosition, soundManager]);
+  }, [currentPosition]);
+
+  useEffect(() => {
+    if (!isPlaying && soundManager.current) {
+      soundManager.current.stop(); // Stop sound when dragging
+    }
+  }, [isPlaying]);
 
   const checkIfOnStage = (position) => {
     // Assuming stage is centered at (0, 0) and has a radius of 1.5
@@ -57,7 +75,8 @@ function AnimalBox({ color, soundPath, initialPosition, label, onDrop }) {
 
   const handlePointerMove = (event) => {
     if (dragging) {
-      console.log([event.point.x, initialPosition[1], event.point.z]);
+      setPlaying(false);
+      // console.log([event.point.x, initialPosition[1], event.point.z]);
       api.position.set(event.point.x, initialPosition[1], event.point.z);
     }
   };
@@ -65,22 +84,6 @@ function AnimalBox({ color, soundPath, initialPosition, label, onDrop }) {
   const handlePointerUp = () => {
     setDragging(false);
     api.mass.set(1); // Re-enable physics after dragging
-
-    const roundedPosition = currentPosition.map((value) => Math.round(value));
-    console.log("Pointer Up Position (rounded):", roundedPosition);
-
-    onDrop(
-      roundedPosition,
-      () => {
-        // soundManager.play();
-        isPlayingRef.current = true; // Mark sound as playing
-      },
-      () => {
-        // soundManager.stop();
-        isPlayingRef.current = false; // Mark sound as stopped
-      },
-      () => api.position.set(...initialPosition)
-    );
   };
 
   useEffect(() => {

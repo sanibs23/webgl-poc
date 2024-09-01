@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { Physics, usePlane } from "@react-three/cannon";
 import Stage from "./Stage";
 import AnimalBox from "./AnimalBox";
-import { OrbitControls } from "@react-three/drei";
+// import { OrbitControls } from "@react-three/drei";
 // import GroundPlane from "./GroundPlane";
 
 function GroundPlane() {
@@ -22,23 +22,6 @@ function GroundPlane() {
 }
 
 function CanvasContainer({ positions }) {
-  const handleDrop = (position, playSound, stopSound, setInitPos) => {
-    const stageCenter = [0, 0]; // Stage is centered at (0, 0)
-    const stageRadius = 1.5;
-
-    const dx = position[0] - stageCenter[0];
-    const dz = position[2] - stageCenter[1];
-    const distance = Math.sqrt(dx ** 2 + dz ** 2);
-
-    const isWithinStage = distance <= stageRadius;
-
-    if (isWithinStage) {
-      playSound();
-    } else {
-      stopSound();
-    }
-  };
-
   return (
     <Canvas
       shadows
@@ -57,21 +40,18 @@ function CanvasContainer({ positions }) {
           soundPath="/asset/dog.wav"
           initialPosition={positions.dog}
           label="Dog"
-          onDrop={handleDrop}
         />
         <AnimalBox
           color="green"
           soundPath="/asset/cow.wav"
           initialPosition={positions.cow}
           label="Cow"
-          onDrop={handleDrop}
         />
         <AnimalBox
           color="yellow"
           soundPath="/asset/cat.wav"
           initialPosition={positions.cat}
           label="Cat"
-          onDrop={handleDrop}
         />
       </Physics>
     </Canvas>
