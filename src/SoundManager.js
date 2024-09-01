@@ -1,24 +1,31 @@
 class SoundManager {
-  static instances = [];
+  static instances = {};
 
   constructor(soundPath) {
     this.soundPath = soundPath;
-    this.audio = new Audio(soundPath);
-    SoundManager.instances.push(this); // Track each instance
+
+    if (!SoundManager.instances[soundPath]) {
+      this.audio = new Audio(soundPath);
+      SoundManager.instances[soundPath] = this.audio;
+    } else {
+      this.audio = SoundManager.instances[soundPath];
+    }
   }
 
   play() {
+    console.log("playing audio");
     this.audio.loop = true;
     this.audio.play();
   }
 
   stop() {
+    console.log("stopping audio");
     this.audio.pause();
     this.audio.currentTime = 0; // Reset audio to start
   }
 
   static stopAll() {
-    SoundManager.instances.forEach((instance) => instance.stop());
+    Object.values(SoundManager.instances).forEach((audio) => audio.pause());
   }
 }
 
