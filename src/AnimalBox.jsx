@@ -27,6 +27,7 @@ function AnimalBox({ color, soundPath, initialPosition, label, onDrop }) {
     onDrop(
       position,
       () => soundManager.play(),
+      () => soundManager.stop(),
       () => setPosition(initialPosition)
     );
   };
